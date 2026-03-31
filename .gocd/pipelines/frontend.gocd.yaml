@@ -47,23 +47,23 @@ pipelines:
               tasks:
                 - exec:
                     command: npm
+                    arguments: [ci]
+                    working_directory: frontend
+                - exec:
+                    command: npm
                     arguments: [run, build]
                     working_directory: frontend
                 - exec:
-                    command: docker
+                    command: cmd
                     arguments:
-                      - build
-                      - -t
-                      - ghcr.io/shrihari-joshi/ticket-booking-frontend:${GO_PIPELINE_LABEL}
-                      - -t
-                      - ghcr.io/shrihari-joshi/ticket-booking-frontend:latest
-                      - .
+                      - /c
+                      - docker build -t ghcr.io/shrihari-joshi/ticket-booking-frontend:%GO_PIPELINE_LABEL% -t ghcr.io/shrihari-joshi/ticket-booking-frontend:latest .
                     working_directory: frontend
                 - exec:
-                    command: docker
+                    command: cmd
                     arguments:
-                      - push
-                      - ghcr.io/shrihari-joshi/ticket-booking-frontend:${GO_PIPELINE_LABEL}
+                      - /c
+                      - docker push ghcr.io/shrihari-joshi/ticket-booking-frontend:%GO_PIPELINE_LABEL%
                     working_directory: frontend
 
       # ─────────────────────────────────────────────────────────────
@@ -81,7 +81,7 @@ pipelines:
                     command: cmd
                     arguments:
                       - /c
-                      - cd frontend\k8s\overlays\dev && kustomize edit set image frontend=ghcr.io/shrihari-joshi/ticket-booking-frontend:${GO_PIPELINE_LABEL} && kubectl apply -k . && kubectl rollout status deployment/dev-frontend -n ticket-booking-dev
+                      - cd frontend\k8s\overlays\dev && kustomize edit set image frontend=ghcr.io/shrihari-joshi/ticket-booking-frontend:%GO_PIPELINE_LABEL% && kubectl apply -k . && kubectl rollout status deployment/dev-frontend -n ticket-booking-dev
 
       # ─────────────────────────────────────────────────────────────
       # Stage 4: Deploy QA — requires manual gate
@@ -99,7 +99,7 @@ pipelines:
                     command: cmd
                     arguments:
                       - /c
-                      - cd frontend\k8s\overlays\qa && kustomize edit set image frontend=ghcr.io/shrihari-joshi/ticket-booking-frontend:${GO_PIPELINE_LABEL} && kubectl apply -k . && kubectl rollout status deployment/qa-frontend -n ticket-booking-qa
+                      - cd frontend\k8s\overlays\qa && kustomize edit set image frontend=ghcr.io/shrihari-joshi/ticket-booking-frontend:%GO_PIPELINE_LABEL% && kubectl apply -k . && kubectl rollout status deployment/qa-frontend -n ticket-booking-qa
 
       # ─────────────────────────────────────────────────────────────
       # Stage 5: Deploy Prod — requires manual gate
@@ -117,4 +117,4 @@ pipelines:
                     command: cmd
                     arguments:
                       - /c
-                      - cd frontend\k8s\overlays\prod && kustomize edit set image frontend=ghcr.io/shrihari-joshi/ticket-booking-frontend:${GO_PIPELINE_LABEL} && kubectl apply -k . && kubectl rollout status deployment/prod-frontend -n ticket-booking-prod
+                      - cd frontend\k8s\overlays\prod && kustomize edit set image frontend=ghcr.io/shrihari-joshi/ticket-booking-frontend:%GO_PIPELINE_LABEL% && kubectl apply -k . && kubectl rollout status deployment/prod-frontend -n ticket-booking-prod
