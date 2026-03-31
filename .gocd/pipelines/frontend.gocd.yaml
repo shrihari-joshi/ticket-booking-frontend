@@ -26,23 +26,18 @@ pipelines:
             type: success
           jobs:
             lint-and-test:
-              environment_variables:
-                CI: "true"
               tasks:
                 - exec:
                     command: npm
                     arguments: [ci]
                     working_directory: frontend
                 - exec:
-                    command: npx
-                    arguments:
-                      - eslint
-                      - "."
-                      - --ext
-                      - js,jsx
-                      - --report-unused-disable-directives
-                      - --max-warnings
-                      - "0"
+                    command: npm
+                    arguments: [run, lint]
+                    working_directory: frontend
+                - exec:
+                    command: npm
+                    arguments: [run, build]
                     working_directory: frontend
 
       # ─────────────────────────────────────────────────────────────
