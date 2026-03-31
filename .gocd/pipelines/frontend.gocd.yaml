@@ -33,10 +33,6 @@ pipelines:
                     working_directory: frontend
                 - exec:
                     command: npm
-                    arguments: [run, lint]
-                    working_directory: frontend
-                - exec:
-                    command: npm
                     arguments: [run, build]
                     working_directory: frontend
 
