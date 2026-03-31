@@ -1,0 +1,89 @@
+name: Frontend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}-frontend
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint and Test
+        run: |
+          npm run lint --if-present
+          npm test --if-present
+
+      - name: Build JS
+        run: npm run build
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+  deploy-dev:
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Mock deploy step
+      - name: Deploy to Dev K8s
+        run: |
+          echo "Setting image to ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          # cd k8s/overlays/dev && kustomize edit set image frontend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          # kubectl apply -k k8s/overlays/dev
+
+  deploy-qa:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment:
+      name: qa
+      url: https://qa.ticketkhidki.com
+    steps:
+      - name: Deploy to QA K8s
+        run: echo "Deploying to QA via Kustomize"
+
+  deploy-prod:
+    needs: deploy-qa
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://ticketkhidki.com
+    steps:
+      - name: Deploy to Prod K8s
+        run: echo "Deploying to Production via Kustomize"
