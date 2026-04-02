@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Navbar from './components/common/Navbar'
@@ -13,6 +14,10 @@ import ProfilePage from './pages/ProfilePage'
 function ProtectedRoute({ children }) {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
   return isAuthenticated ? children : <Navigate to="/login" replace />
+}
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
 }
 
 export default function App() {

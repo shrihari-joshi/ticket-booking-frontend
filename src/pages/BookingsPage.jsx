@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import { fetchBookingsThunk, cancelBookingThunk } from '../store/slices/bookingsSlice'
+import PropTypes from 'prop-types'
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -19,6 +20,10 @@ function BookingStatusBadge({ status }) {
     refunded: 'badge badge-expired',
   }
   return <span className={map[status] ?? 'badge'}>{status}</span>
+}
+
+BookingStatusBadge.propTypes = {
+  status: PropTypes.string.isRequired,
 }
 
 export default function BookingsPage() {
@@ -78,13 +83,13 @@ export default function BookingsPage() {
       {/* Grid of 2 cards per row */}
       <div className="grid-2">
         {bookings.map((booking) => (
-          <div 
-            key={booking.id} 
-            className="card" 
-            style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              padding: '1.5rem', 
+          <div
+            key={booking.id}
+            className="card"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              padding: '1.5rem',
               cursor: 'pointer',
               position: 'relative',
               overflow: 'hidden'
@@ -116,7 +121,7 @@ export default function BookingsPage() {
 
             {/* Split Bottom: Seats + Actions / QR Code */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto' }}>
-              
+
               <div style={{ flex: 1 }}>
                 {booking.items && booking.items.length > 0 && (
                   <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
@@ -127,7 +132,7 @@ export default function BookingsPage() {
                     ))}
                   </div>
                 )}
-                
+
                 {(booking.status === 'pending' || booking.status === 'confirmed') && (
                   <button
                     className="btn btn-secondary btn-sm"
@@ -141,9 +146,9 @@ export default function BookingsPage() {
               {/* QR Code */}
               {booking.status === 'confirmed' && (
                 <div style={{ background: '#fff', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--color-border)', flexShrink: 0 }}>
-                  <QRCodeSVG 
-                    value={generateQRPayload(booking)} 
-                    size={80} 
+                  <QRCodeSVG
+                    value={generateQRPayload(booking)}
+                    size={80}
                     bgColor={"#ffffff"}
                     fgColor={"#000000"}
                     level={"L"}
@@ -152,7 +157,7 @@ export default function BookingsPage() {
                 </div>
               )}
             </div>
-            
+
             {/* Edge accent */}
             <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'var(--color-primary)' }}></div>
           </div>

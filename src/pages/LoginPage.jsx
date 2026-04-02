@@ -70,7 +70,7 @@ export default function LoginPage() {
         <div className="divider" />
 
         <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link to="/register" style={{ color: 'var(--color-primary-light)', fontWeight: 600 }}>
             Create one
           </Link>

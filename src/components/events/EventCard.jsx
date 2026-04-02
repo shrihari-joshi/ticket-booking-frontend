@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
 function formatDate(dateStr) {
@@ -48,4 +49,19 @@ export default function EventCard({ event }) {
       </div>
     </div>
   )
+}
+
+EventCard.propTypes = {
+  event: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    status: PropTypes.string.isRequired,
+    image_url: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    start_time: PropTypes.string.isRequired,
+    venue: PropTypes.shape({
+      name: PropTypes.string,
+      city: PropTypes.string,
+    }),
+    available_seats: PropTypes.number,
+  }).isRequired,
 }

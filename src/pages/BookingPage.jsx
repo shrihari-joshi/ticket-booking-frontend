@@ -61,7 +61,7 @@ export default function BookingPage() {
         <div style={{ fontSize: '4rem' }}>🎉</div>
         <h2>Booking Created!</h2>
         <p style={{ color: 'var(--color-text-secondary)' }}>
-          Payment is being processed. You'll receive a confirmation shortly.
+          Payment is being processed. You&apos;ll receive a confirmation shortly.
         </p>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Redirecting to your bookings...</p>
       </div>

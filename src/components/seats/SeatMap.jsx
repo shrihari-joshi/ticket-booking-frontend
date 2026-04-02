@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 export default function SeatMap({
@@ -110,4 +111,18 @@ export default function SeatMap({
       })()}
     </div>
   )
+}
+
+SeatMap.propTypes = {
+  seats: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    row: PropTypes.string.isRequired,
+    number: PropTypes.number.isRequired,
+    category: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    status: PropTypes.string.isRequired,
+  })).isRequired,
+  selectedSeatIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+  onSeatToggle: PropTypes.func.isRequired,
+  maxSelectable: PropTypes.number,
 }
