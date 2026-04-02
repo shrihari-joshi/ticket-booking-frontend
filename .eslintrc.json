@@ -2,7 +2,8 @@
     "env": {
         "browser": true,
         "es2021": true,
-        "node": true
+        "node": true,
+        "worker": true
     },
     "extends": [
         "eslint:recommended",
@@ -21,10 +22,58 @@
             "version": "detect"
         }
     },
+    "globals": {
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": "readonly",
+        "WorkerGlobalScope": "readonly"
+    },
     "rules": {
-        "no-unused-vars": "warn",
-        "no-console": "warn",
+        "no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "^_|^[a-z]$"
+            }
+        ],
+        "no-console": [
+            "warn",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ],
         "react/react-in-jsx-scope": "off",
-        "react/prop-types": "error"
-    }
+        "react/prop-types": "error",
+        "react/display-name": "warn",
+        "no-prototype-builtins": "error",
+        "no-empty": [
+            "error",
+            {
+                "allowEmptyCatch": true
+            }
+        ],
+        "no-constant-condition": [
+            "error",
+            {
+                "checkLoops": false
+            }
+        ],
+        "no-case-declarations": "off",
+        "no-fallthrough": [
+            "error",
+            {
+                "commentPattern": "break[\\s\\w]*omitted|fallthrough"
+            }
+        ],
+        "no-regex-spaces": "error",
+        "no-useless-escape": "warn",
+        "no-cond-assign": "error"
+    },
+    "ignorePatterns": [
+        "node_modules/",
+        "build/",
+        "dist/",
+        ".next/",
+        "coverage/"
+    ]
 }
