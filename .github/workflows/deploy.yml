@@ -54,39 +54,3 @@ jobs:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-  deploy-dev:
-    needs: build-and-push
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: dev
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      # Mock deploy step
-      - name: Deploy to Dev K8s
-        run: |
-          echo "Setting image to ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
-          # cd k8s/overlays/dev && kustomize edit set image frontend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          # kubectl apply -k k8s/overlays/dev
-
-  deploy-qa:
-    needs: deploy-dev
-    runs-on: ubuntu-latest
-    environment:
-      name: qa
-      url: https://qa.ticketkhidki.com
-    steps:
-      - name: Deploy to QA K8s
-        run: echo "Deploying to QA via Kustomize"
-
-  deploy-prod:
-    needs: deploy-qa
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: https://ticketkhidki.com
-    steps:
-      - name: Deploy to Prod K8s
-        run: echo "Deploying to Production via Kustomize"
