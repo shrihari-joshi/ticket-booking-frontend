@@ -54,3 +54,34 @@ jobs:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+  deploy-dev:
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Deploy to Dev
+        run: echo "Setting up Dev Env"
+
+  deploy-qa:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment:
+      name: qa
+      url: https://qa.ticketkhidki.com
+    steps:
+      - name: Deploy to QA K8s
+        run: echo "Deploying to QA"
+
+  deploy-prod:
+    needs: deploy-qa
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://ticketkhidki.com
+    steps:
+      - name: Deploy to Prod K8s
+        run: echo "Deploying to Production"
